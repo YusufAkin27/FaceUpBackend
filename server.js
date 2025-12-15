@@ -46,12 +46,44 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Graceful shutdown
+function gracefulShutdown(signal) {
+  // Socket handler cleanup
+  socketHandler.cleanup();
+  
+  // Tüm socket bağlantılarını kapat
+  io.close(() => {
+    // Socket.io kapatıldı
+  });
+  
+  // HTTP server'ı kapat
+  server.close(() => {
+    process.exit(0);
+  });
+  
+  // Force shutdown after 10 seconds
+  setTimeout(() => {
+    process.exit(1);
+  }, 10000);
+}
+
+// Signal handlers
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Unhandled errors
+process.on('uncaughtException', (error) => {
+  gracefulShutdown('uncaughtException');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  // Unhandled rejection sessizce yok sayılıyor
+});
+
 // Server başlat
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0'; // Tüm ağ arayüzlerinde dinle
 
 server.listen(PORT, HOST, () => {
-  console.log(`🚀 Server çalışıyor: http://localhost:${PORT}`);
-  console.log(`🌐 Ağ üzerinden erişim: http://172.20.10.3:${PORT}`);
-  console.log(`📡 Socket.io hazır`);
+  // Server başlatıldı
 });

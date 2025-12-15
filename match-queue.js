@@ -13,6 +13,9 @@ class MatchQueue {
     
     // Son eşleşmeler (swipe için): { userId: Set([partnerId1, partnerId2, ...]) }
     this.recentMatches = new Map();
+    
+    // Recent matches için max size (memory leak önleme)
+    this.MAX_RECENT_MATCHES = 50;
   }
 
   /**
@@ -114,8 +117,36 @@ class MatchQueue {
       this.recentMatches.set(matchedUserId, new Set());
     }
     
-    this.recentMatches.get(userId).add(matchedUserId);
-    this.recentMatches.get(matchedUserId).add(userId);
+    const userRecentMatches = this.recentMatches.get(userId);
+    const matchedUserRecentMatches = this.recentMatches.get(matchedUserId);
+    
+    // Max size kontrolü - eski eşleşmeleri temizle
+    if (userRecentMatches.size >= this.MAX_RECENT_MATCHES) {
+      // İlk eklenen eşleşmeyi sil (FIFO)
+      const firstMatch = userRecentMatches.values().next().value;
+      if (firstMatch) {
+        userRecentMatches.delete(firstMatch);
+        // Karşı taraftaki eşleşmeyi de temizle
+        const otherRecentMatches = this.recentMatches.get(firstMatch);
+        if (otherRecentMatches) {
+          otherRecentMatches.delete(userId);
+        }
+      }
+    }
+    
+    if (matchedUserRecentMatches.size >= this.MAX_RECENT_MATCHES) {
+      const firstMatch = matchedUserRecentMatches.values().next().value;
+      if (firstMatch) {
+        matchedUserRecentMatches.delete(firstMatch);
+        const otherRecentMatches = this.recentMatches.get(firstMatch);
+        if (otherRecentMatches) {
+          otherRecentMatches.delete(matchedUserId);
+        }
+      }
+    }
+    
+    userRecentMatches.add(matchedUserId);
+    matchedUserRecentMatches.add(userId);
 
     return {
       user1: {
@@ -191,7 +222,18 @@ class MatchQueue {
       this.activeMatches.delete(userId);
       this.activeMatches.delete(partnerId);
     }
-    // Recent matches'i temizleme (kullanıcı geri geldiğinde aynı kişilerle eşleşebilir)
+    // Recent matches'i temizle (memory leak önleme)
+    // Kullanıcı geri geldiğinde yeni eşleşmeler yapabilir
+    this.recentMatches.delete(userId);
+    
+    // Diğer kullanıcıların recent matches'inden de bu kullanıcıyı temizle
+    for (const [otherUserId, recentSet] of this.recentMatches.entries()) {
+      recentSet.delete(userId);
+      // Eğer recent matches boşaldıysa, Map'ten de sil
+      if (recentSet.size === 0) {
+        this.recentMatches.delete(otherUserId);
+      }
+    }
   }
 }
 
