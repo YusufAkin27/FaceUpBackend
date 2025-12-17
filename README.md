@@ -14,7 +14,7 @@ Geliştirme modu için:
 npm run dev
 ```
 
-Server varsayılan olarak `http://localhost:3000` portunda çalışır.
+Server varsayılan olarak `https://api.yusufakin.xyz` portunda çalışır.
 
 ## API Endpoints
 
