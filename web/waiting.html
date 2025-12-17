@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>FaceUp - Eşleşme Aranıyor</title>
+    <link rel="stylesheet" href="waiting.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card waiting-card">
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <h2>Eşleşme aranıyor...</h2>
+                <p>Size uygun bir eşleşme bulunuyor, lütfen bekleyin.</p>
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <button id="cancelBtn" class="btn btn-secondary">İptal</button>
+        </div>
+    </div>
+
+    <!-- Hata Mesajı -->
+    <div id="errorToast" class="toast"></div>
+
+    <!-- Socket.io CDN -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="waiting.js"></script>
+</body>
+</html>
+

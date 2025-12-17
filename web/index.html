@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>FaceUp - Giriş</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <!-- Giriş Formu -->
+    <div id="loginScreen" class="screen active">
+        <div class="container">
+            <div class="card">
+                <div class="logo">
+                    <h1>FaceUp</h1>
+                    <p class="tagline">Yeni insanlarla tanış, görüntülü görüş</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="fullName">Adınız <span style="color: #999; font-weight: normal;"></span></label>
+                        <input type="text" id="fullName" name="fullName" required placeholder="Adınızı girin" autocomplete="name">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span>Başla</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </form>
+
+             
+        </div>
+    </div>
+
+
+    <!-- Hata Mesajı -->
+    <div id="errorToast" class="toast"></div>
+
+    <!-- Socket.io CDN -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>
